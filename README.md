@@ -46,3 +46,6 @@ have access to it.
 system and for the data to be stored for a long duration.
 - The developers suggest using a compiler that has more memory than the current compiler 
 used.
+
+## Program Screenshots
+![plot](./images/ProgramLaunch.png)
