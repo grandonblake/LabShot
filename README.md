@@ -3,6 +3,9 @@ A simple C++ Automated Food Stall and Inventory System
 
 This project was submitted on January 19, 2021 as a Final Project requirement during my 1st year in College.
 
+## How to Run
+Just put the whole source code in a C++ compiler. Originally, we used onlinegdb.com
+
 ## Project Objectives
 The  project  focuses  on  developing  an  automated  food  stall  and  inventory  system.  This 
 project lessens the time consumption and it helps to keep the record of all the daily sales of a store. 
@@ -48,4 +51,5 @@ system and for the data to be stored for a long duration.
 used.
 
 ## Program Screenshots
+1. **LAUNCH OF PROGRAM & ADMIN LOGIN -** the program will ask the user to either [0] Start Program or [1] Close Program. If they chose option 1, the program will end. If option 0 was selected, it will begin the program and require an admin to login. If any other character was inputted besides 0 & 1, the output will return as invalid and will loop to the start of the program.
 ![plot](./images/ProgramLaunch.png)
