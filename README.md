@@ -52,4 +52,6 @@ used.
 
 ## Program Screenshots
 1. **LAUNCH OF PROGRAM & ADMIN LOGIN -** the program will ask the user to either [0] Start Program or [1] Close Program. If they chose option 1, the program will end. If option 0 was selected, it will begin the program and require an admin to login. If any other character was inputted besides 0 & 1, the output will return as invalid and will loop to the start of the program.
-![plot](./images/ProgramLaunch.png)
+<img src="/images/ProgramLaunch.png" width=50% height=50%>
+
+
