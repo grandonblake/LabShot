@@ -1,0 +1,1772 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+#include <algorithm>
+#include <numeric>
+#include <sstream>
+using namespace std;
+
+void menu();
+bool checkInventory();
+void stockCounter();
+void confirmPurchases();
+void finalTransaction();
+void minusInventory();
+void addInventory();
+void adminPanel();
+void repeatMenu();
+void xreciept();
+void todaysSalesFunction();
+
+//LESSEN DECLARE GLOBALLY
+float price, currentTotalPrice, overallSales, currentTotalPayment2, payment, change;
+int quantity, changeQuantity;
+string currentOrder;
+bool orderLoop = true, finalTransactionLoop = true, menuLoop = true, adminLogged_In = false, replenishInventoryLoop = true, notChange = true, seeOrder = false;
+vector<string> currentItems;
+vector<int> currentQuantity;
+vector<string> totalItems;
+vector<int> totalQuantity;
+vector<int>::iterator it;
+vector<float> currentTotalPayment;
+vector<float> totalPayment;
+vector<string> customerName;
+vector<int> transactionNumber;
+vector<string> currentQuantityString;
+vector<string> currentTotalPaymentString;
+vector<string> transactionNumberString;
+vector<string> todaysSales;
+vector<float> currentTotalPayment2Vector;
+vector<string> currentTotalPayment2String;
+vector<float> paymentVector;
+vector<string> paymentString;
+vector<float> changeVector;
+vector<string> changeString;
+string customer;
+
+time_t now = time(0);
+char* dt = ctime(&now);
+
+//Today's Sales Counter (Admin Panel)
+vector<string> QStrawberryCarnival, QOreoKrunch, QMiloDinosaur, QBerrylicious, QMakeItFloat, QNachos, QFries;
+
+// STOCKCOUNTER
+int stockStrawberryCarnival, stockOreoKrunch, stockMiloDinosaur, stockBerrylicious, stockMakeItFloat, stockNachosItem, stockFriesItem;
+
+//usernames and passwords
+string Usernames[5] = {"Grandon", "Lance", "Ronahld", "Danilo", "Juan"};
+string Passwords[5] = {"Vicente", "Candelaria", "Gacer", "Madrigal", "Villegas"};
+
+
+bool adminLogin(){ 
+    string adminUsername, adminPassword;
+    cout << endl << "Enter your username: ";
+    cin >> adminUsername;
+    cout << "Enter your password: ";
+    cin >> adminPassword;
+    for(int i = 0; i < 5; i++) {
+        if((adminUsername.compare(Usernames[i]) == 0) && (adminPassword.compare(Passwords[i]) == 0)){
+            return true;
+        }
+    }
+    return false;
+}
+
+//INGREDIENTS
+float amountCups, amountStraws, amountStrawberryPowder, amountStrawberrySyrup, amountSprinkles, amountOreoPowder, amountOreo, amountEvaporatedMilk, amountCondensedMilk, amountMiloPowder, amountSprite, amountYakult, amountMarshmallows, amountIcecream, amountFries, amountNachos, amountDisposablePaperTray;
+
+//CHECK REPLENISH 
+bool replenishBool = true;
+float replenishInventoryItem;
+int replenishInventory;
+
+//CHECK INGREDIENTS
+bool sufficientIngredients, sufficientIngredients2;
+
+//CHANGEORDER
+bool changeOrder = true;
+
+//NOT REPEAT ORDER
+bool strawberryDone = false, oreoDone = false, miloDone = false, berryDone = false, makeitDone = false, nachosDone = false, friesDone = false;
+
+bool logged_in;
+
+string showPrice;
+bool paymentBool = true;
+
+// ------------------------------------------ MAIN ------------------------------------------
+
+int main()
+{
+    cout << "========================================" << endl;
+    cout << "========= LABSHOT  ENTERPRISES =========" << endl;
+    cout << "========================================" << endl;
+
+
+    
+    bool exit = false;
+    while(exit != true){
+        char choice;
+        do{
+            cout << endl << "[0] Start Program" << endl;
+            cout << "[1] Close Program" << endl;
+            cout<<"Enter your option here: ";
+            cin >> choice;
+            if(choice=='1'){
+            cout<<endl<<"Closing the program..."<<endl<<"The Program is Closed";
+            break;
+            }
+            if(choice!= '0' && '1' && '2'){
+            cout<<endl<< "Invalid Input..."<<endl<<"Please Try Again"<<endl;
+            exit==false;
+            }
+        }while(!(choice == '1' || choice == '0'));
+        
+        if(choice == '0'){
+            logged_in = adminLogin(); //this is where the store owner will log-in
+            
+            if(logged_in){
+            //this is where the store owner will input the inventory items if logged-in
+            cout << "========================================" << endl;
+            cout << "                INVENTORY               " << endl;
+            cout << "========================================" << endl;
+            cout << "Please input amount of ingredients:" << endl;
+            
+            bool inventoryLoop = true;
+            
+            do{
+                cout << "Cups (pcs): ";
+                cin >> amountCups;
+                
+                if(amountCups >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Straws (pcs): ";
+                cin >> amountStraws;    
+                
+                if(amountStraws >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+                    
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{    
+                cout << "Disposable Paper Tray (pcs): ";
+                cin >> amountDisposablePaperTray;
+                
+                if(amountDisposablePaperTray >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+                    
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{ 
+                cout << "Strawberry Powder (g): ";
+                cin >> amountStrawberryPowder;
+                
+                if(amountStrawberryPowder >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+                    
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Strawberry Syrup (mL): ";
+                cin >> amountStrawberrySyrup;
+            
+                if(amountStrawberrySyrup >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Sprinkles (g): ";
+                cin >> amountSprinkles;
+                
+                if(amountSprinkles >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            do{
+                cout << "Oreo Powder (g): ";
+                cin >> amountOreoPowder;
+                
+                if(amountOreoPowder >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Oreo (pcs): ";
+                cin >> amountOreo;
+                
+                if(amountOreo >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Evaporated Milk (mL): ";
+                cin >> amountEvaporatedMilk;
+                
+                if(amountEvaporatedMilk >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Condensed Milk (mL): ";
+                cin >> amountCondensedMilk;
+                
+                if(amountCondensedMilk >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Marshmallows (pcs): ";
+                cin >> amountMarshmallows;
+                
+                if(amountMarshmallows >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Milo Powder (g): ";
+                cin >> amountMiloPowder;
+                
+                if(amountMiloPowder >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Sprite (mL): ";
+                cin >> amountSprite;
+                
+                if(amountSprite >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Yakult (bottles): ";
+                cin >> amountYakult;
+                
+                if(amountYakult >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Ice cream (gallon): "; // 1 gallon == 16 cups, if 1 scoop is 1/2 cup then 32 cups per day
+                cin >> amountIcecream;
+                
+                if(amountIcecream >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Nachos(g): ";
+                cin >> amountNachos;
+                
+                if(amountNachos >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            
+            do{
+                cout << "Fries (g): ";
+                cin >> amountFries;
+                
+                if(amountFries >= 0)
+                    inventoryLoop = false;
+                else
+                    cout << "Cannot proceed with a negative value..." << endl;
+            
+            }while(inventoryLoop);
+            
+            inventoryLoop = true;
+            stockCounter();
+            repeatMenu();
+
+            }
+            else {
+            cout << "Invalid account." << endl;
+            }
+        }
+        else {
+        exit = true;
+        }
+    }
+    return 0;
+}
+
+void repeatMenu(){
+    do {
+        menu(); //will call the menu function and display the menu
+        confirmPurchases();
+    } while(orderLoop == true);
+    
+    finalTransaction();
+}
+
+// ------------------------------------------ MENU ------------------------------------------
+
+void menu(){
+    do {
+        
+        bool orderBool = true;
+        bool shakeBool;
+        bool softdrinksBool;
+        bool fingerBool;
+        int itemNumber;
+        int shakeNumber;
+        int softdrinksNumber;
+        int fingerNumber;
+
+        do{
+            
+            cout << endl << endl << "===================================================" << endl;
+            cout << "||                     LABSHOT                   ||" << endl;
+            cout << "||             Discover your own flavor          ||" << endl;
+            cout << "||===============================================||" << endl;
+            cout << "||                                               ||" << endl;
+            cout << "||            [1] SMOOTHIES/SHAKES               ||" << endl;
+            cout << "||                                               ||" << endl;
+            cout << "||              [2] SOFTDRINKS                   ||" << endl;
+            cout << "||                                               ||" << endl;
+            cout << "||              [3] FINGERFOODS                  ||" << endl;
+            cout << "||                                               ||" << endl;
+            cout << "||===============================================||" << endl;
+            cout << "|| [9] See Current Order                         ||" << endl;
+            cout << "|| [0] Administrator Panel                       ||" << endl;
+            cout << "||===============================================||" << endl << endl;
+            
+            cout << "Enter Item Number Here: ";
+            cin >> itemNumber;
+            shakeBool = true;
+            softdrinksBool = true;
+            fingerBool = true;
+            
+            switch(itemNumber){
+            
+                case 1: 
+                
+                    cout << endl << endl << "=============================================================" << endl;
+                    cout << "||                      LABSHOT                            ||" << endl;
+                    cout << "||              Discover your own flavor                   ||" << endl;
+                    cout << "||=========================================================||" << endl;
+                    cout << "||                                                         ||" << endl;
+                    cout << "||              SMOOTHIES/SHAKES [₱25.00]                  ||" << endl;
+                    cout << "||             Size        Item             Stock          ||" << endl;
+                    cout << left << setw(10) << "||" << setw(5) << "[1]" << setw(30) << "12oz Strawberry Carnival" << "(" << right << setw(2) << stockStrawberryCarnival << left << setw(11) << ")" << setw(10) << "||" << endl;
+                    cout << setw(10) << "||" << setw(5) << "[2]" << setw(30) << "12oz Oreo Krunch" << "(" << right << setw(2) << stockOreoKrunch << left << setw(11) << ")" << setw(10) << "||"  << endl;
+                    cout << setw(10) << "||" << setw(5) << "[3]" << setw(30) << "12oz Milo Dinosaur" << "(" << right << setw(2) << stockMiloDinosaur << left << setw(11) <<  ")" << setw(10) << "||" << endl;
+                    cout << "||                                                         ||" << endl;
+                    cout << "||=========================================================||" << endl;
+                    cout << "|| [0] Back                                                ||" << endl;
+                    cout << "=============================================================" << endl << endl;
+                
+                    do{
+                        cout << "Choose a smoothie/shake: ";
+                        cin >> shakeNumber;
+                        
+                        switch(shakeNumber){
+                            
+                            case 1:
+                                
+                                if(std::find(currentItems.begin(), currentItems.end(), "Strawberry Carnival") != currentItems.end()){
+                                    cout << endl << "Strawberry Carnival is already in Order List. Try changing the quantity instead." << endl << endl;
+                                    break;
+                                }
+                                
+                                if(stockStrawberryCarnival > 0){
+                                    currentOrder = "Strawberry Carnival";
+                                    shakeBool = false;
+                                    orderBool = false;
+                                    break;
+                                }
+                                else{
+                                    cout << endl << "Sorry, insufficient ingredients to make that item..." << endl << endl;
+                                    break;
+                                }
+                                break;
+                                
+                            case 2: 
+                            
+                                if(std::find(currentItems.begin(), currentItems.end(), "Oreo Krunch") != currentItems.end()){
+                                    cout << endl << "Oreo Krunch is already in Order List. Try changing the quantity instead." << endl << endl;
+                                    break;
+                                }
+                            
+                                if(stockOreoKrunch > 0){
+                                    currentOrder = "Oreo Krunch";
+                                    shakeBool = false;
+                                    orderBool = false;
+                                }
+                                else{
+                                    cout << endl << "Sorry, insufficient ingredients to make that item..." << endl;
+                                    break;
+                                }
+                                break;
+                            case 3:
+                            
+                                if(std::find(currentItems.begin(), currentItems.end(), "Milo Dinosaur") != currentItems.end()){
+                                    cout << endl << "Milo Dinosaur is already in Order List. Try changing the quantity instead." << endl << endl;
+                                    break;
+                                }
+                                if(stockMiloDinosaur > 0){
+                                    currentOrder = "Milo Dinosaur";
+                                    shakeBool = false;
+                                    orderBool = false;
+                                }
+                                else{
+                                    cout << endl << "Sorry, insufficient ingredients to make that item..." << endl;
+                                    break;
+                                }
+                                break;
+                                
+                            case 0: 
+                                shakeBool = false;
+                                break;
+                            
+                            default: 
+                            cout << "Menu item is invalid. Please try again..." << endl;
+                            break;
+                        }
+                        
+                    }while(shakeBool);
+                break;
+                
+                case 2: 
+                
+                    cout << endl << endl << "========================================================" << endl;
+                    cout << "||                      LABSHOT                       ||" << endl;
+                    cout << "||              Discover your own flavor              ||" << endl;
+                    cout << "||====================================================||" << endl;
+                    cout << "||                                                    ||" << endl;
+                    cout << "||                SOFTDRINKS [₱30.00]                 ||" << endl;
+                    cout << "||             Size     Item           Stock          ||" << endl;
+                    cout << left << setw(10) << "||" << setw(5) << "[1]" << setw(25) << "12oz Berrylicious" << "(" << right << setw(2) << stockBerrylicious << left << setw(11) << ")" << setw(10) << "||" << endl;
+                    cout << setw(10) << "||" << setw(5) << "[2]" << setw(25) << "12oz Make-it Float" << "(" << right << setw(2) << stockMakeItFloat << left << setw(11) << ")" << setw(10) << "||"  << endl;
+                    cout << "||                                                    ||" << endl;
+                    cout << "||====================================================||" << endl;
+                    cout << "|| [0] Back                                           ||" << endl;
+                    cout << "========================================================" << endl << endl;
+                    
+                    do{
+                        cout << "Choose softdrinks: ";
+                        cin >> softdrinksNumber;
+                    
+                        switch(softdrinksNumber){
+                            
+                            case 1:
+                            
+                                if(std::find(currentItems.begin(), currentItems.end(), "Berrylicious") != currentItems.end()){
+                                    cout << endl << "Berrylicious is already in Order List. Try changing the quantity instead." << endl << endl;
+                                    break;
+                                }
+                                
+                                if(stockBerrylicious > 0){
+                                    currentOrder = "Berrylicious";
+                                    softdrinksBool = false;
+                                    orderBool = false;
+                                }
+                                else{
+                                    cout << endl << "Sorry, insufficient ingredients to make that item..." << endl;
+                                    break;
+                                }
+                                break;
+                                
+                            case 2:
+                            
+                                if(std::find(currentItems.begin(), currentItems.end(), "Make-it Float") != currentItems.end()){
+                                    cout << endl << "Make-it Float is already in Order List. Try changing the quantity instead." << endl << endl;
+                                    break;
+                                }
+                                
+                                if(stockMakeItFloat > 0){
+                                    currentOrder = "Make-it Float";
+                                    softdrinksBool = false;
+                                    orderBool = false;
+                                }
+                                else{
+                                    cout << endl << "Sorry, insufficient ingredients to make that item..." << endl;
+                                    break;
+                                }
+                                break;
+                                
+                            case 0:
+                                softdrinksBool = false;
+                                break;
+                            
+                            default: 
+                                cout << "Menu item is invalid. Please try again..." << endl;
+                                break;
+                        }
+                    }while(softdrinksBool);
+                    break;
+                
+                case 3:
+                    
+                    cout << endl << endl << "========================================================" << endl;
+                    cout << "||                        LABSHOT                     ||" << endl;
+                    cout << "||                Discover your own flavor            ||" << endl;
+                    cout << "||====================================================||" << endl;
+                    cout << "||                                                    ||" << endl;
+                    cout << "||                  FINGER FOOD [₱15.00]              ||" << endl;
+                    cout << "||             Size Item          Stock               ||" << endl;
+                    cout << left << setw(10) << "||" << setw(5) << "[1]" << setw(20) << "150g Nachos" << "(" << right << setw(2) << stockNachosItem << left << setw(16) << ")" << setw(10) << "||" << endl;
+                    cout << setw(10) << "||" << setw(5) << "[2]" << setw(20) << "100g Fries" << "(" << right << setw(2) << stockFriesItem << left << setw(16) << ")" << setw(10) << "||"  << endl;
+                    cout << "||                                                    ||" << endl;
+                    cout << "||====================================================||" << endl;
+                    cout << "|| [0] Back                                           ||" << endl;
+                    cout << "========================================================" << endl << endl;
+                
+                    do{
+                        cout << "Choose Finger Food: ";
+                        cin >> fingerNumber;
+                        
+                        switch(fingerNumber){
+                            
+                            case 1:
+                            
+                                if(std::find(currentItems.begin(), currentItems.end(), "Nachos") != currentItems.end()){
+                                    cout << endl << "Nachos is already in Order List. Try changing the quantity instead." << endl << endl;
+                                    break;
+                                }
+                                
+                                if(stockNachosItem > 0){
+                                    currentOrder = "Nachos";
+                                    fingerBool = false;
+                                    orderBool = false;
+                                }
+                                else{
+                                    cout << endl << "Sorry, insufficient ingredients to make that item..." << endl;
+                                    break;
+                                }
+                                break;
+                            case 2:
+                            
+                                if(std::find(currentItems.begin(), currentItems.end(), "Fries") != currentItems.end()){
+                                    cout << endl << "Fries is already in Order List. Try changing the quantity instead." << endl << endl;
+                                    break;
+                                }
+                                
+                                if(stockFriesItem > 0){
+                                    currentOrder = "Fries";
+                                    fingerBool = false;
+                                    orderBool = false;
+                                }
+                                else{
+                                    cout << endl << "Sorry, insufficient ingredients to make that item..." << endl;
+                                    break;
+                                }
+                                break;
+                            case 0:
+                                fingerBool = false;
+                                break;
+                                
+                            default: 
+                                cout << "Menu item is invalid. Please try again..." << endl;
+                                break;
+                        }
+                    }while(fingerBool);
+                break;
+                
+                case 0:
+                    adminLogged_In = adminLogin();
+                    if(adminLogged_In == true){
+                        adminPanel();
+                        repeatMenu();
+                        orderBool = false;
+                        break;
+                    }
+                    else {
+                    cout << "Invalid account." << endl;
+                    repeatMenu();
+                    orderBool = false;
+                    break;
+                    }
+                break;
+                
+                case 9:
+                
+                    if(currentItems.size() > 0 ){
+                        cout << endl;
+                        orderBool = false;
+                        menuLoop = false;
+                        seeOrder = true;
+                    }
+                    else{
+                        cout << "The order list is still empty..." << endl;
+                    }
+                
+                break;
+                
+                default:
+                    cout << "Menu item is invalid. Please try again..." << endl;
+                    break;
+            }
+        }while(orderBool);
+        
+        if(!seeOrder){
+            cout << "How many of the item do you want to purchase?: ";
+            cin >> quantity;
+            if(quantity <= 0){
+                cout << "Invalid quantity of items. Please try again..." << endl;
+                repeatMenu();
+            }
+                
+            changeOrder = true;
+            sufficientIngredients = checkInventory();
+                
+            if(sufficientIngredients){
+                menuLoop = false;
+            }
+            else {
+                cout << "Sorry, insufficient ingredients to make this item..." << endl;
+            }
+        }
+    }while(menuLoop);
+}
+
+// ------------------------------------------ CHECK INVENTORY ------------------------------------------
+
+bool checkInventory(){
+    if(currentOrder.compare("Strawberry Carnival") == 0){
+        if(amountCups >= 1*quantity && amountStraws >= 1*quantity && amountStrawberryPowder >= 32*quantity && amountStrawberrySyrup >= 1*quantity && amountSprinkles >= 5*quantity){ 
+            price = 25;
+            while(changeOrder){
+                currentItems.push_back("Strawberry Carnival");
+                break;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    if(currentOrder.compare("Oreo Krunch") == 0){
+        if(amountCups >= 1*quantity && amountStraws >= 1*quantity && amountOreoPowder >= 32*quantity && amountCondensedMilk >= 60*quantity && amountEvaporatedMilk >= 30*quantity && amountOreo >= 0.5*quantity && amountMarshmallows >= 1*quantity){
+            price = 25;
+            while(changeOrder){
+                currentItems.push_back("Oreo Krunch");
+                break;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    if(currentOrder.compare("Milo Dinosaur") == 0){
+        if(amountCups >= 1*quantity && amountStraws >= 1*quantity && amountMiloPowder >= 32*quantity && amountCondensedMilk >= 60*quantity && amountEvaporatedMilk >= 30*quantity && amountMarshmallows >= 2*quantity){
+            price = 25;
+            while(changeOrder){
+                currentItems.push_back("Milo Dinosaur");
+                break;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    if(currentOrder.compare("Berrylicious") == 0){
+        if(amountCups >= 1*quantity && amountStraws >= 1*quantity && amountYakult >= 1*quantity && amountStrawberrySyrup >= 30*quantity && amountSprite >= 300*quantity){
+            price = 30;
+            while(changeOrder){
+                currentItems.push_back("Berrylicious");
+                break;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    if(currentOrder.compare("Make-it Float") == 0){
+        if(amountCups >= 1*quantity && amountStraws >= 1*quantity && amountStrawberryPowder >= 60*quantity && amountSprite >= 300*quantity && amountIcecream >= 0.03125*quantity){
+            price = 30;
+            while(changeOrder){
+                currentItems.push_back("Make-it Float");
+                break;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    if(currentOrder.compare("Nachos") == 0){
+        if(amountDisposablePaperTray >= 1*quantity && amountNachos >= 150*quantity){
+            price = 15;
+            while(changeOrder){
+                currentItems.push_back("Nachos");
+                break;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    if(currentOrder.compare("Fries") == 0){
+        if(amountDisposablePaperTray >= 1*quantity && amountFries >= 100*quantity){
+            price = 15;
+            while(changeOrder){
+                currentItems.push_back("Fries");
+                break;
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+}
+
+// ------------------------------------------ STOCK INVENTORY ------------------------------------------
+
+void stockCounter(){
+    
+    int stockCups, stockStraws, stockStrawberryPowder, stockStrawberrySyrup, stockSprinkles, stockOreoPowder, stockCondensedMilk, stockEvaporatedMilk, stockMiloPowder, stockYakult, stockSprite, stockIcecream, stockDisposablePaperTray, stockNachos, stockFries, stockOreo, stockMarshmallow;
+    
+    // Strawberry Carnival
+    stockCups = amountCups/1;
+    stockStraws = amountStraws/1;
+    stockStrawberryPowder = amountStrawberryPowder/32;
+    stockStrawberrySyrup = amountStrawberrySyrup/1;
+    stockSprinkles = amountSprinkles/5;
+    
+    vector<int> strawberryCarnival;
+    strawberryCarnival.push_back(stockCups);
+    strawberryCarnival.push_back(stockStraws);
+    strawberryCarnival.push_back(stockStrawberryPowder);
+    strawberryCarnival.push_back(stockStrawberrySyrup);
+    strawberryCarnival.push_back(stockSprinkles);
+    stockStrawberryCarnival = *min_element(strawberryCarnival.begin(), strawberryCarnival.end());
+    
+    // Oreo Krunch
+    stockCups = amountCups/1;
+    stockStraws = amountStraws/1;
+    stockOreoPowder = amountOreoPowder/32;
+    stockCondensedMilk = amountCondensedMilk/60;
+    stockEvaporatedMilk = amountEvaporatedMilk/30;
+    stockOreo = amountOreo/0.5;
+    stockMarshmallow = amountMarshmallows/1;
+    
+    vector<int> oreoKrunch;
+    oreoKrunch.push_back(stockCups);
+    oreoKrunch.push_back(stockStraws);
+    oreoKrunch.push_back(stockOreoPowder);
+    oreoKrunch.push_back(stockCondensedMilk);
+    oreoKrunch.push_back(stockEvaporatedMilk);
+    oreoKrunch.push_back(stockOreo);
+    oreoKrunch.push_back(stockMarshmallow);
+    stockOreoKrunch = *min_element(oreoKrunch.begin(), oreoKrunch.end());
+    
+    // Milo Dinosaur
+    stockCups = amountCups/1;
+    stockStraws = amountStraws/1;
+    stockMiloPowder = amountMiloPowder/32;
+    stockCondensedMilk = amountCondensedMilk/60;
+    stockEvaporatedMilk = amountEvaporatedMilk/30;
+    stockMarshmallow = amountMarshmallows/2;
+    
+    vector<int> miloDinosaur;
+    miloDinosaur.push_back(stockCups);
+    miloDinosaur.push_back(stockStraws);
+    miloDinosaur.push_back(stockMiloPowder);
+    miloDinosaur.push_back(stockCondensedMilk);
+    miloDinosaur.push_back(stockEvaporatedMilk);
+    miloDinosaur.push_back(stockMarshmallow);
+    stockMiloDinosaur = *min_element(miloDinosaur.begin(), miloDinosaur.end());
+    
+    // Berrylicious
+    stockCups = amountCups/1;
+    stockStraws = amountStraws/1;
+    stockYakult = amountYakult/1;
+    stockStrawberrySyrup = amountStrawberrySyrup/30;
+    stockSprite = amountSprite/300;
+    
+    vector<int> Berrylicious;
+    Berrylicious.push_back(stockCups);
+    Berrylicious.push_back(stockStraws);
+    Berrylicious.push_back(stockYakult);
+    Berrylicious.push_back(stockStrawberrySyrup);
+    Berrylicious.push_back(stockSprite);
+    stockBerrylicious = *min_element(Berrylicious.begin(), Berrylicious.end());
+    
+    // Make-it Float
+    stockCups = amountCups/1;
+    stockStraws = amountStraws/1;
+    stockStrawberryPowder = amountStrawberryPowder/60;
+    stockSprite = amountSprite/300;
+    stockIcecream = amountIcecream/0.03125;
+    
+    vector<int> MakeItFloat;
+    MakeItFloat.push_back(stockCups);
+    MakeItFloat.push_back(stockStraws);
+    MakeItFloat.push_back(stockStrawberryPowder);
+    MakeItFloat.push_back(stockSprite);
+    MakeItFloat.push_back(stockIcecream);
+    stockMakeItFloat = *min_element(MakeItFloat.begin(), MakeItFloat.end());
+    
+    // Nachos
+    stockDisposablePaperTray = amountDisposablePaperTray/1;
+    stockNachos = amountNachos/150;
+    
+    vector<int> Nachos;
+    Nachos.push_back(stockDisposablePaperTray);
+    Nachos.push_back(stockNachos);
+    stockNachosItem = *min_element(Nachos.begin(), Nachos.end());
+    
+    // Fries
+    stockDisposablePaperTray = amountDisposablePaperTray/1;
+    stockFries = amountFries/100;
+    
+    vector<int> Fries;
+    Fries.push_back(stockDisposablePaperTray);
+    Fries.push_back(stockFries);
+    stockFriesItem = *min_element(Fries.begin(), Fries.end());
+}
+
+// --------------------------------------- DELETE ORDER --------------------------------------------
+
+void deleteOrder(){
+    
+    int input;
+    bool editOrderBool = true;
+    int changeQuantity;
+    bool deleteLoop = true;
+    
+    do{
+        cout << endl << "Current Items:" << endl << endl;
+        for (int i = 0; i < currentItems.size(); i++){
+            
+           if(currentItems[i] == "Strawberry Carnival" || currentItems[i] == "Milo Dinosaur" || currentItems[i] == "Oreo Krunch"){
+                showPrice = "@ P25";
+           }
+           else if (currentItems[i] == "Berrylicious" || currentItems[i] == "Make-it Float"){
+               showPrice = "@ P30";
+           }
+           else if (currentItems[i] == "Fries" || currentItems[i] == "Nachos"){
+               showPrice = "@ P15";
+           }    
+            
+            cout << left << "[" << i << "] " << currentQuantity[i] << "x " << setw(25) << currentItems[i] << "  " << showPrice << "   - ₱ " << currentTotalPayment[i] << endl;
+        }
+    
+        cout << "What do you want to edit in your order?" << endl << "==================================" << endl;
+        cout << "Enter input: ";
+        cin >> input;
+        
+        if(input > currentItems.size()-1 || input < 0){
+            cout << "Invalid input. Please try again." << endl << endl;
+        }
+        
+        else {
+            editOrderBool = false;
+            for (int b = 0; b != currentQuantity.size(); b++) {
+                if (input == b) {
+                    int showStock;
+                    if(currentItems[b] == "Strawberry Carnival"){
+                        strawberryDone = false;
+                    }
+                    else if(currentItems[b] == "Oreo Krunch"){
+                        oreoDone = false;
+                    }
+                    else if(currentItems[b] == "Milo Dinosaur"){
+                        miloDone = false;
+                    }
+                    else if(currentItems[b] == "Berrylicious"){
+                        berryDone = false;
+                    }
+                    else if(currentItems[b] == "Make-it Float"){
+                        makeitDone = false;
+                    }
+                    else if(currentItems[b] == "Nachos"){
+                        nachosDone = false;
+                    }
+                    else if(currentItems[b] == "Fries"){
+                        friesDone = false;
+                    }
+                    addInventory();
+                    stockCounter();
+                    if(currentItems[b] == "Strawberry Carnival"){
+                        showStock = stockStrawberryCarnival;
+                        strawberryDone = false;
+                    }
+                    else if(currentItems[b] == "Oreo Krunch"){
+                        showStock = stockOreoKrunch;
+                        oreoDone = false;
+                    }
+                    else if(currentItems[b] == "Milo Dinosaur"){
+                        showStock = stockMiloDinosaur;
+                        miloDone = false;
+                    }
+                    else if(currentItems[b] == "Berrylicious"){
+                        showStock = stockBerrylicious;
+                        berryDone = false;
+                    }
+                    else if(currentItems[b] == "Make-it Float"){
+                        showStock = stockMakeItFloat;
+                        makeitDone = false;
+                    }
+                    else if(currentItems[b] == "Nachos"){
+                        showStock = stockNachosItem;
+                        nachosDone = false;
+                    }
+                    else if(currentItems[b] == "Fries"){
+                        showStock = stockFriesItem;
+                        friesDone = false;
+                    }
+                    do{
+                        cout << currentQuantity[b] << "x " << currentItems[b] << " [Maximum: " << showStock << "]" << endl << endl;
+                        cout << "How many of " << currentItems[b] << " do you want to purchase instead: ";
+                        cin >> changeQuantity;
+                        
+                        quantity = changeQuantity;
+                        currentOrder = currentItems[b];
+                        
+                        if(changeQuantity < 0){
+                            cout << "Cannot proceed with a negative value...Please try again..." << endl;
+                        }
+                        else if(changeQuantity == 0){
+                            stockCounter();
+                            currentItems.erase(currentItems.begin() + b);
+                            currentQuantity.erase(currentQuantity.begin() + b);
+                            currentTotalPayment.erase(currentTotalPayment.begin() + b);
+                            deleteLoop = false;
+                        }
+                        else{
+                            
+                            changeOrder = false;
+                            sufficientIngredients2 = checkInventory();
+                
+                            if(sufficientIngredients2){
+                                currentQuantity[b] = changeQuantity;
+                                currentTotalPayment[b] = price*changeQuantity;
+                                minusInventory();
+                                stockCounter();
+                                deleteLoop = false;
+                            }
+                            else {
+                                cout << "Sorry, insufficient ingredients to make this item..." << endl;
+                            }
+                        }
+                    }while(deleteLoop);
+                break;
+                }
+            }
+        }
+    }while(editOrderBool);
+}
+
+// ------------------------------------------ CONFIRM PURCHASES ------------------------------------------
+
+void confirmPurchases(){
+    if(!seeOrder){
+        currentTotalPrice = price*quantity;
+        currentQuantity.push_back(quantity);
+        currentTotalPayment.push_back(currentTotalPrice);
+        minusInventory();
+        stockCounter();
+    }
+    seeOrder = false;
+    menuLoop = true;
+    
+    int confirmPurchases;
+    while(confirmPurchases != 1 || 2 || 3 || 4){
+        
+        cout << "============== Current Order List ==============" << endl;
+        for (int i = 0; i < currentItems.size(); i++){
+            
+            if(currentItems[i] == "Strawberry Carnival" || currentItems[i] == "Milo Dinosaur" || currentItems[i] == "Oreo Krunch"){
+                showPrice = "@ P25";
+            }
+            else if (currentItems[i] == "Berrylicious" || currentItems[i] == "Make-it Float"){
+               showPrice = "@ P30";
+            }
+            else if (currentItems[i] == "Fries" || currentItems[i] == "Nachos"){
+               showPrice = "@ P15";
+            }    
+            
+            cout << left << currentQuantity[i] << "x " << setw(25) << currentItems[i] << "  " << showPrice << " - ₱ " << currentTotalPayment[i] << endl;
+        }
+        
+        cout << endl << "===================================" << endl;
+        cout << "[1] Confirm Order" << endl;
+        cout << "[2] Buy another item" << endl;
+        cout << "[3] Edit Quantity / Delete Item" << endl;
+        cout << "[4] Cancel Order" << endl;
+        cout << "===================================" << endl;
+        cin >> confirmPurchases;
+        if(confirmPurchases == 1){
+            if(currentItems.size() == 0){
+                cout << "You cannot confirm order without an order." << endl;
+                break;
+            }
+            else {
+                orderLoop = false;
+                break;
+            }
+            
+        }
+        else if (confirmPurchases == 2){
+            break;
+        }
+        else if (confirmPurchases == 3){
+            
+            deleteOrder();
+
+        }
+        else if (confirmPurchases == 4){
+            strawberryDone = false, oreoDone = false, miloDone = false, berryDone = false, makeitDone = false, nachosDone = false, friesDone = false;
+            addInventory();
+            strawberryDone = false, oreoDone = false, miloDone = false, berryDone = false, makeitDone = false, nachosDone = false, friesDone = false;
+            stockCounter();
+            currentItems.clear();
+            currentQuantity.clear();
+            currentTotalPayment.clear();
+            currentTotalPrice = 0; price = 0, quantity = 0;
+            break;
+        }
+        else {
+            cout << endl << "Invalid input. Please try again." << endl << endl;
+        }
+    }
+}
+
+// ------------------------------------------ MINUS INVENTORY ------------------------------------------
+
+void minusInventory(){
+    
+    int inventoryQuantity;
+    if(strawberryDone == false){
+        auto it = std::find(currentItems.begin(), currentItems.end(), "Strawberry Carnival");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+
+        QStrawberryCarnival.resize(QStrawberryCarnival.size() + inventoryQuantity, "Strawberry Carnival");
+        
+        amountCups -= 1*inventoryQuantity;
+        amountStraws -= 1*inventoryQuantity;
+        amountStrawberryPowder -= 32*inventoryQuantity;
+        amountStrawberrySyrup -= 1*inventoryQuantity;
+        amountSprinkles -= 5*inventoryQuantity;
+        
+        strawberryDone = true;
+        }
+    }
+    
+    if(oreoDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Oreo Krunch");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+
+        QOreoKrunch.resize(QOreoKrunch.size() + inventoryQuantity, "Oreo Krunch");
+        
+        amountCups -= 1*inventoryQuantity;
+        amountStraws -= 1*inventoryQuantity;
+        amountOreoPowder -= 32*inventoryQuantity;
+        amountCondensedMilk -= 60*inventoryQuantity;
+        amountEvaporatedMilk -= 30*inventoryQuantity;
+        amountOreo -= 0.5*inventoryQuantity;
+        
+        oreoDone = true;
+        }
+    }
+    
+    if(miloDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Milo Dinosaur");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+
+        QMiloDinosaur.resize(QMiloDinosaur.size() + inventoryQuantity, "Milo Dinosaur");
+        
+        amountCups -= 1*inventoryQuantity;
+        amountStraws -= 1*inventoryQuantity;
+        amountMiloPowder -= 32*inventoryQuantity; 
+        amountCondensedMilk -= 60*inventoryQuantity;
+        amountEvaporatedMilk -= 30*inventoryQuantity;
+        amountMarshmallows -= 2*inventoryQuantity;
+        
+        miloDone = true;
+        }
+    }
+    
+    if(berryDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Berrylicious");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+        
+        QBerrylicious.resize(QBerrylicious.size() + inventoryQuantity, "Berrylicious");
+        
+        amountCups -= 1*inventoryQuantity;
+        amountStraws -= 1*inventoryQuantity;
+        amountYakult -= 1*inventoryQuantity;
+        amountStrawberrySyrup -= 30*inventoryQuantity; 
+        amountSprite -= 300*inventoryQuantity;
+        
+        berryDone = true;
+        }
+    }
+    
+    if(makeitDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Make-it Float");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+        
+        QMakeItFloat.resize(QMakeItFloat.size() + inventoryQuantity, "Make-it Float");
+        
+        amountCups -= 1*inventoryQuantity;
+        amountStraws -= 1*inventoryQuantity;
+        amountStrawberryPowder -= 60*inventoryQuantity; 
+        amountSprite -= 300*inventoryQuantity;
+        amountIcecream -= 0.03125*inventoryQuantity;
+        
+        makeitDone = true;
+        }
+    }
+    
+    if(nachosDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Nachos");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+
+        QNachos.resize(QNachos.size() + inventoryQuantity, "Nachos");
+        
+        amountDisposablePaperTray -= 1*inventoryQuantity;
+        amountNachos -= 150*inventoryQuantity;
+        
+        nachosDone = true;
+        }
+    }
+    
+    if(friesDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Fries");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+
+        QFries.resize(QFries.size() + inventoryQuantity, "Fries");
+        
+        amountDisposablePaperTray -= 1*inventoryQuantity;
+        amountFries -= 100*inventoryQuantity;
+        
+        friesDone = true;
+        }
+    }
+}
+
+// ------------------------------------------ ADD INVENTORY ------------------------------------------
+
+void addInventory(){
+    
+    int inventoryQuantity;
+    if(strawberryDone == false){
+        auto it = std::find(currentItems.begin(), currentItems.end(), "Strawberry Carnival");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+
+        for(int i = 0; i < inventoryQuantity; i++){
+            QStrawberryCarnival.pop_back();
+        }
+
+        amountCups += 1*inventoryQuantity;
+        amountStraws += 1*inventoryQuantity;
+        amountStrawberryPowder += 32*inventoryQuantity;
+        amountStrawberrySyrup += 1*inventoryQuantity;
+        amountSprinkles += 5*inventoryQuantity;
+        
+        strawberryDone = true;
+        }
+    }
+    
+    if(oreoDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Oreo Krunch");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+
+        for(int i = 0; i < inventoryQuantity; i++){
+            QOreoKrunch.pop_back();
+        }
+        
+        amountCups += 1*inventoryQuantity;
+        amountStraws += 1*inventoryQuantity;
+        amountOreoPowder += 32*inventoryQuantity;
+        amountCondensedMilk += 60*inventoryQuantity;
+        amountEvaporatedMilk += 30*inventoryQuantity;
+        amountOreo += 0.5*inventoryQuantity;
+        amountMarshmallows += 1*inventoryQuantity;
+        
+        oreoDone = true;
+        }
+    }
+    
+    if(miloDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Milo Dinosaur");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+        
+        for(int i = 0; i < inventoryQuantity; i++){
+            QMiloDinosaur.pop_back();
+        }
+        
+        amountCups += 1*inventoryQuantity;
+        amountStraws += 1*inventoryQuantity;
+        amountMiloPowder += 32*inventoryQuantity; 
+        amountCondensedMilk += 60*inventoryQuantity;
+        amountEvaporatedMilk += 30*inventoryQuantity;
+        amountMarshmallows += 2*inventoryQuantity;
+        
+        miloDone = true;
+        }
+    }
+    
+    if(berryDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Berrylicious");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+
+        for(int i = 0; i < inventoryQuantity; i++){
+            QBerrylicious.pop_back();
+        }
+        
+        amountCups += 1*inventoryQuantity;
+        amountStraws += 1*inventoryQuantity;
+        amountYakult += 1*inventoryQuantity;
+        amountStrawberrySyrup += 30*inventoryQuantity; 
+        amountSprite += 300*inventoryQuantity;
+        
+        berryDone = true;
+        }
+    }
+    
+    if(makeitDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Make-it Float");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+        
+        for(int i = 0; i < inventoryQuantity; i++){
+            QMakeItFloat.pop_back();
+        }
+        
+        amountCups += 1*inventoryQuantity;
+        amountStraws += 1*inventoryQuantity;
+        amountStrawberryPowder += 60*inventoryQuantity; 
+        amountSprite += 300*inventoryQuantity;
+        amountIcecream += 0.03125*inventoryQuantity;
+        
+        makeitDone = true;
+        }
+    }
+    
+    if(nachosDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Nachos");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+
+        for(int i = 0; i < inventoryQuantity; i++){
+            QNachos.pop_back();
+        }
+        
+        amountDisposablePaperTray += 1*inventoryQuantity;
+        amountNachos += 150*inventoryQuantity;
+        
+        nachosDone = true;
+        }
+    }
+    
+    if(friesDone == false){
+        auto it = find(currentItems.begin(), currentItems.end(), "Fries");
+        if (it != currentItems.end()){
+        int index = distance(currentItems.begin(), it);
+        int index2 = currentQuantity.at(index);
+        inventoryQuantity = index2;
+
+        for(int i = 0; i < inventoryQuantity; i++){
+            QFries.pop_back();
+        }
+        
+        amountDisposablePaperTray += 1*inventoryQuantity;
+        amountFries += 100*inventoryQuantity;
+        
+        friesDone = true;
+        }
+    }
+}
+
+// ------------------------------------------ TRANSACTION COMPUTATION ------------------------------------------
+
+void transactionComputation(){
+    paymentVector.push_back(payment);
+    changeVector.push_back(change);
+    totalItems.insert(totalItems.end(), currentItems.begin(), currentItems.end());
+    totalQuantity.insert(totalQuantity.end(), currentQuantity.begin(), currentQuantity.end());
+    totalPayment.insert(totalPayment.end(), currentTotalPayment.begin(), currentTotalPayment.end());
+    overallSales += currentTotalPayment2;
+    
+    for(int i = 0; i < currentQuantity.size(); i++){
+        stringstream ss;
+        ss << currentQuantity[i];
+        currentQuantityString.push_back(ss.str());
+    }
+    
+    for(int i = 0; i < currentTotalPayment.size(); i++){
+        stringstream ss;
+        ss << currentTotalPayment[i];
+        currentTotalPaymentString.push_back(ss.str());
+    }
+    
+    for(int i = 0; i < transactionNumber.size(); i++){
+        stringstream ss;
+        ss << transactionNumber[i];
+        transactionNumberString.push_back(ss.str());
+    }
+    
+    for(int i = 0; i < currentTotalPayment2Vector.size(); i++){
+        stringstream ss;
+        ss << currentTotalPayment2Vector[i];
+        currentTotalPayment2String.push_back(ss.str());
+    }
+    
+    for(int i = 0; i < paymentVector.size(); i++){
+        stringstream ss;
+        ss << paymentVector[i];
+        paymentString.push_back(ss.str());
+    }
+    
+    for(int i = 0; i < changeVector.size(); i++){
+        stringstream ss;
+        ss << changeVector[i];
+        changeString.push_back(ss.str());
+    }
+    
+    todaysSales.push_back("Customer Name: " + customer);
+    todaysSales.push_back("Transaction Number: " + transactionNumberString.back());
+    todaysSales.push_back(" ");
+    for (int i = 0; i < currentItems.size(); i++){
+        
+        if(currentItems[i] == "Strawberry Carnival" || currentItems[i] == "Milo Dinosaur" || currentItems[i] == "Oreo Krunch"){
+            showPrice = "@ P25";
+        }
+        else if (currentItems[i] == "Berrylicious" || currentItems[i] == "Make-it Float"){
+           showPrice = "@ P30";
+        }
+        else if (currentItems[i] == "Fries" || currentItems[i] == "Nachos"){
+           showPrice = "@ P15";
+        }    
+        
+        todaysSales.push_back(currentQuantityString[i] + "x " + currentItems[i] + "  " + showPrice + "   - ₱ " + currentTotalPaymentString[i]);
+    }
+    todaysSales.push_back(" ");
+    todaysSales.push_back("Total Payment: ₱ " + currentTotalPayment2String.back());
+    todaysSales.push_back("Payment: ₱ " + paymentString.back());
+    todaysSales.push_back("Change: ₱ " + changeString.back());
+    todaysSales.push_back("====================");
+    
+    currentItems.clear();
+    currentQuantity.clear();
+    currentTotalPayment.clear();
+    currentQuantityString.clear();
+    currentTotalPaymentString.clear();
+    changeString.clear();
+    currentTotalPrice = 0; price = 0, quantity = 0, change = 0;
+    strawberryDone = false, oreoDone = false, miloDone = false, berryDone = false, makeitDone = false, nachosDone = false, friesDone = false;
+    repeatMenu();
+}
+
+// ------------------------------------------ FINAL TRANSACTION ------------------------------------------
+
+void finalTransaction(){
+    
+    currentTotalPayment2 = accumulate(currentTotalPayment.begin(), currentTotalPayment.end(), 0);
+    paymentBool = true;
+    orderLoop = true;
+    //menuLoop = true;
+    do {
+        cout << endl << "Enter your name here: ";
+        getline(cin, customer);
+        getline(cin, customer);
+        customerName.push_back(customer);
+        transactionNumber.push_back(customerName.size());
+        currentTotalPayment2Vector.push_back(currentTotalPayment2);
+        
+        do{
+            cout << endl << "============= TRANSACTION =============" << endl;
+            cout << "Total Price to be paid: " << fixed << setprecision(2) << currentTotalPayment2 << endl;
+            cout << "=======================================" << endl;
+            cout << "Enter payment here: ";
+            cin >> payment;
+        
+            if(currentTotalPayment2 == payment){
+                xreciept();
+                transactionComputation();
+                paymentBool = false;
+            }
+            else if(currentTotalPayment2 < payment){
+                change = payment - currentTotalPayment2;
+                xreciept();
+                transactionComputation();
+                paymentBool = false;
+            }
+            else {
+                cout << endl << "Insufficient Payment. Please try again." << endl;
+            }
+            
+        }while(paymentBool);    
+            
+    } while(finalTransactionLoop);
+}
+
+void xreciept(){
+    cout << endl << "**************************************************************" << endl;
+    cout << "***********  L A B S H O T  E N T E R P R I S E S  ***********" << endl;
+    cout << "**************************************************************" << endl << endl;
+    cout << "                   S A L E S  R E C E I P T                   " << endl;
+    cout << left << setw(19) << " " << dt << endl;
+    cout << left << setw(2) << " " << "Customer Name: " << customer << endl;
+    cout << left << setw(2) << " " << "Transaction Number: " << transactionNumber.back() << endl << endl;
+    cout << left << setw(5) << " " << "P R O D U C T S:" << endl;
+    for (int i = 0; i < currentItems.size(); i++){
+        
+       if(currentItems[i] == "Strawberry Carnival" || currentItems[i] == "Milo Dinosaur" || currentItems[i] == "Oreo Krunch"){
+           showPrice = "@ P25";
+       }
+       else if (currentItems[i] == "Berrylicious" || currentItems[i] == "Make-it Float"){
+           showPrice = "@ P30";
+       }
+       else if (currentItems[i] == "Fries" || currentItems[i] == "Nachos"){
+           showPrice = "@ P15";
+       }
+        
+        cout << left << setw(7) << " " << currentQuantity[i] << "x " << setw(30) << currentItems[i] << showPrice << "   - ₱ " << currentTotalPayment[i] << endl;
+    }
+    cout << left << setw(41) << " " << "TOTAL: ₱ " << currentTotalPayment2 << endl << endl;
+    cout << left << setw(5) << " " << "Total Payment: ₱ " << currentTotalPayment2 << endl;
+    cout << left << setw(5) << " " << "Cash: ₱ " << payment << endl;
+    cout << left << setw(5) << " " << "Change: ₱ " << change << endl << endl;
+    cout << "               Thank you for purchasing at LABSHOT            " << endl;
+    cout << "**************************************************************" << endl << endl;
+}
+
+//------------------------------------------ REPLENISH INVENTORY CHECKING ------------------------------------------
+
+void replenishCheck(){
+    
+    do{
+        cout << "Enter amount in pcs: ";
+        cin >> replenishInventoryItem;
+        replenishBool = true;
+        
+        if(replenishInventoryItem >= 0){
+            replenishBool = false;
+        }
+        else{
+            cout << "Cannot Proceed with a negative value. Please try again..." << endl;
+        }
+    }while(replenishBool);
+    
+}
+
+// ------------------------------------------ ADMIN PANEL ------------------------------------------
+
+void adminPanel(){
+    char adminPanel;
+    while(adminPanel != '1' || '2' || '3' || '4'){
+        cout << "========== ADMIN PANEL ==========" << endl;
+        cout << "[1] See Today's Sales" << endl;
+        cout << "[2] Inventory Menu" << endl;
+        cout << "[3] Stop Program" << endl << endl;
+        cout << "[4] Exit Admin Panel" << endl;
+        cout << "================================" << endl;
+        cout << "Enter Here: ";
+        cin >> adminPanel;
+        if(adminPanel == '1'){
+            cout << endl << "=======================" << endl;
+            cout << dt << endl;
+            cout << "=======================" << endl;
+            for (int a = 0; a < todaysSales.size(); a++){
+                cout << todaysSales[a] << endl;
+            }
+            todaysSalesFunction();
+        }
+        else if (adminPanel == '2'){
+            do {
+                cout << "======================================" << endl;
+                cout << "=========== INVENTORY MENU ===========" << endl;
+                cout << "======================================" << endl;
+                cout << "[1] Cups (pcs): " << amountCups << endl;
+                cout << "[2] Straws (pcs): " << amountStraws << endl;
+                cout << "[4] Strawberry Powder (g): " << amountStrawberryPowder << endl;
+                cout << "[5] Strawberry Syrup (mL): " << amountStrawberrySyrup << endl;
+                cout << "[6] Sprinkles (g): " << amountSprinkles << endl;
+                cout << "[7] Oreo Powder (g): " << amountOreoPowder << endl;
+                cout << "[8] Oreo (pcs): " << amountOreo << endl;
+                cout << "[9] Evaporated Milk (mL): " << amountEvaporatedMilk << endl;
+                cout << "[10] Condensed Milk (mL): " << amountCondensedMilk << endl;
+                cout << "[11] Marshmallows (pcs): " << amountMarshmallows << endl;
+                cout << "[12] Milo Powder (g): " << amountMiloPowder << endl;
+                cout << "[13] Sprite (mL): " << amountSprite << endl;
+                cout << "[14] Yakult (bottles): " << amountYakult << endl;
+                cout << "[15] Ice cream (gallon): " << amountIcecream << endl; // 1 gallon == 16 cups, if 1 scoop is 1/2 cup then 32 cups per day
+                cout << "[16] Nachos (g): " << amountNachos << endl;
+                cout << "[17] Fries (g): " << amountFries << endl << endl;
+                cout << "[0] Exit Inventory Menu" << endl;
+                cout << "===========================================" << endl;
+                
+                cout << "Enter Item Number Here: ";
+                
+                cin >> replenishInventory;
+                
+                switch(replenishInventory){
+                    
+                    case 1: 
+                    
+                        replenishCheck();
+                        
+                        amountCups += replenishInventoryItem;
+                        break;
+                        
+                    case 2:
+                    
+                        replenishCheck();
+                        
+                        amountStraws += replenishInventoryItem;
+                        break;
+                        
+                    case 3:
+                    
+                        replenishCheck();
+                        
+                        amountDisposablePaperTray += replenishInventoryItem;
+                        break;
+                        
+                    case 4:
+                    
+                        replenishCheck();
+                        
+                        amountStrawberryPowder += replenishInventoryItem;
+                        break;
+                        
+                    case 5:
+                    
+                        replenishCheck();
+                        
+                        amountStrawberrySyrup += replenishInventoryItem;
+                        break;
+                        
+                    case 6:
+                    
+                        replenishCheck();
+                        
+                        amountSprinkles += replenishInventoryItem;
+                        break;
+                        
+                    case 7:
+                    
+                        replenishCheck();
+                        
+                        amountOreoPowder += replenishInventoryItem;
+                        break;
+                        
+                    case 8:
+                    
+                        replenishCheck();
+                        
+                        amountOreo += replenishInventoryItem;
+                        break;
+                        
+                    case 9:
+                    
+                        replenishCheck();
+                        
+                        amountEvaporatedMilk += replenishInventoryItem;
+                        break;
+                        
+                    case 10:
+                    
+                        replenishCheck();
+                        
+                        amountCondensedMilk += replenishInventoryItem;
+                        break;
+                        
+                    case 11:
+                    
+                        replenishCheck();
+                        
+                        amountMarshmallows += replenishInventoryItem;
+                        break;
+                        
+                    case 12:
+                    
+                        replenishCheck();
+                        
+                        amountMiloPowder += replenishInventoryItem;
+                        break;
+                        
+                    case 13:
+                    
+                        replenishCheck();
+                        
+                        amountSprite += replenishInventoryItem;
+                        break;
+                        
+                    case 14:
+                    
+                        replenishCheck();
+                        
+                        amountYakult += replenishInventoryItem;
+                        break;
+                        
+                    case 15:
+                    
+                        replenishCheck();
+                        
+                        amountIcecream += replenishInventoryItem;
+                        break;
+                        
+                    case 16:
+                    
+                        replenishCheck();
+                        
+                        amountNachos += replenishInventoryItem;
+                        break;
+                        
+                    case 17:
+                    
+                        replenishCheck();
+                        amountFries += replenishInventoryItem;
+                        break;
+                        
+                    case 0:
+                    
+                        replenishInventoryLoop = false;
+                        break;
+                    
+                    default:
+                        cout << "Invalid Item Number." << endl;
+                        break;
+                }
+            }while (replenishInventoryLoop);
+        replenishInventoryLoop = true;
+        }
+        else if (adminPanel == '3'){
+            exit(0);
+        }
+        else if (adminPanel == '4'){
+            adminLogged_In = false;
+            return;
+        }
+        else {
+            cout << "Invalid input. Please try again." << endl;
+        }
+    }
+}
+
+void todaysSalesFunction(){
+    cout << "Total Sales per Item: " << endl;
+    cout << count(QStrawberryCarnival.begin(), QStrawberryCarnival.end(), "Strawberry Carnival") << "x " << "Strawberry Carnival" << " - ₱ " << count(QStrawberryCarnival.begin(), QStrawberryCarnival.end(), "Strawberry Carnival")*25 << endl;
+    cout << count(QOreoKrunch.begin(), QOreoKrunch.end(), "Oreo Krunch") << "x " << "Oreo Krunch" << " - ₱ " << count(QOreoKrunch.begin(), QOreoKrunch.end(), "Oreo Krunch")*25 << endl;
+    cout << count(QMiloDinosaur.begin(), QMiloDinosaur.end(), "Milo Dinosaur") << "x " << "Milo Dinosaur" << " - ₱ " << count(QMiloDinosaur.begin(), QMiloDinosaur.end(), "Milo Dinosaur")*25 << endl;
+    cout << count(QBerrylicious.begin(), QBerrylicious.end(), "Berrylicious") << "x " << "Berrylicious" << " - ₱ " << count(QBerrylicious.begin(), QBerrylicious.end(), "Berrylicious")*30 << endl;
+    cout << count(QMakeItFloat.begin(), QMakeItFloat.end(), "Make-it Float") << "x " << "Make-it Float" << " - ₱ " << count(QMakeItFloat.begin(), QMakeItFloat.end(), "Make-it Float")*30 << endl;
+    cout << count(QNachos.begin(), QNachos.end(), "Nachos") << "x " << "Nachos" << " - ₱ " << count(QNachos.begin(), QNachos.end(), "Nachos")*15 << endl;
+    cout << count(QFries.begin(), QFries.end(), "Fries") << "x " << "Fries" << " - ₱ " << count(QFries.begin(), QFries.end(), "Fries")*15 << endl << endl;
+    cout << "Today's Sales: ₱ " << overallSales << endl;
+    cout << "=======================" << endl << endl;
+}
