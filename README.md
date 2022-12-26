@@ -1,5 +1,5 @@
 # LabShot
-A 1st year Final Coding Project
+A simple C++ Automated Food Stall and Inventory System
 
 This project was submitted on January 19, 2021 as a Final Project requirement during my 1st year in College.
 
