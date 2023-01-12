@@ -1,7 +1,7 @@
 # LabShot
 A simple C++ Automated Food Stall and Inventory System
 
-This project was submitted on January 19, 2021 as a Final Project requirement during my 1st year in College.
+This project was a group effort that was submitted on January 19, 2021 as a Final Project requirement during my 1st year in College.
 
 ## How to Run
 Just put the whole source code in a C++ compiler. Originally, we used onlinegdb.com to compile, debug, and run the program.
